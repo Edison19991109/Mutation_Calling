@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-cat ../all.conf | grep -v germline | cut -d " " -f 1 | while read id; do
-    CrossMap.py vcf "${HOME}"/References/CHAIN/hg38ToHg19.over.chain.gz ${id}_varscan.indel.vcf "${HOME}"/References/GATK/hg19/ucsc.hg19.fasta ${id}_varscan_FINAL_converted.vcf
-done
+    ${files_that_needed_to_be_converted}=
+    ${files_that_are_converted}=
+    CrossMap.py vcf /References/CHAIN/hg38ToHg19.over.chain.gz ${files_that_needed_to_be_converted} /References/GATK/hg19/ucsc.hg19.fasta ${files_that_are_converted}
