@@ -133,7 +133,25 @@ filter_vcf <- function(vcf,caller,type="somatic")
     tumor_ct <- strsplit(sapply(strsplit(vcf$V10,":"),function(x) x[2]),",")
     vcf$tumor_ref <- as.numeric(sapply(tumor_ct,function(x) x[1]))
     vcf$tumor_alt <- as.numeric(sapply(tumor_ct,function(x) x[2]))
-  }else if (caller %in% c("speedseq","shimmer","varscan","strelka"))
+  }
+  if (caller=="mutect2")
+  {
+    ##Return a null data frame if there is no mutation left.
+    if (dim(vcf)[1]==0)
+    {
+      vcf$normal_ref=vcf$normal_alt=vcf$tumor_ref=vcf$tumor_alt=numeric(0)
+      return(vcf)
+    }
+    
+    normal_ct <- strsplit(sapply(strsplit(vcf$V10,":"),function(x) x[2]),",")
+    vcf$normal_ref <- as.numeric(sapply(normal_ct,function(x) x[1]))
+    vcf$normal_alt <- as.numeric(sapply(normal_ct,function(x) x[2]))
+    
+    tumor_ct <- strsplit(sapply(strsplit(vcf$V11,":"),function(x) x[2]),",")
+    vcf$tumor_ref <- as.numeric(sapply(tumor_ct,function(x) x[1]))
+    vcf$tumor_alt <- as.numeric(sapply(tumor_ct,function(x) x[2]))
+  }
+  else if (caller %in% c("speedseq","shimmer","varscan","strelka"))
   {
     if (caller %in% c("speedseq","shimmer"))
     {
@@ -190,9 +208,9 @@ filter_vcf <- function(vcf,caller,type="somatic")
   ##Tumor mutation read count greater than 3.
   if (caller!="strelka_germline") 
   {
-    vcf <- vcf[vcf$normal_ref+vcf$normal_alt>=5,]
-    vcf <- vcf[vcf$tumor_ref+vcf$tumor_alt>=5,]
-    vcf <- vcf[vcf$tumor_alt>=3,]
+    vcf <- vcf[vcf$normal_ref+vcf$normal_alt>=1,]
+    vcf <- vcf[vcf$tumor_ref+vcf$tumor_alt>=1,]
+    vcf <- vcf[vcf$tumor_alt>=1,]
     if (type=="somatic")
     {
       vcf <- vcf[vcf$normal_alt/(vcf$normal_ref+vcf$normal_alt)<
@@ -200,11 +218,11 @@ filter_vcf <- function(vcf,caller,type="somatic")
       #vcf <- vcf[vcf$normal_alt/(vcf$normal_ref+vcf$normal_alt)<0.05,]
     }else
     {
-      vcf <- vcf[vcf$normal_alt>=3,]
+      vcf <- vcf[vcf$normal_alt>=1,]
     } 
   }else # for tumor-only calling, make the calling super sensitive
   {
-    vcf <- vcf[vcf$normal_ref+vcf$normal_alt>=3,]
+    vcf <- vcf[vcf$normal_ref+vcf$normal_alt>=1,]
     vcf <- vcf[vcf$normal_alt>=1,]
   }
   
@@ -223,7 +241,7 @@ mutect1 <- filter_vcf(mutect1,"mutect")
 
 ##Read in the mutect2 vcf file.
 mutect2 <- read_vcf(mutect2_ReadIn)
-mutect2 <- filter_vcf(mutect2,"mutect")
+mutect2 <- filter_vcf(mutect2,"mutect2")
 
 #Read in the shimmer vcf file.
 shimmer <- read_vcf(shimmer_ReadIn)
