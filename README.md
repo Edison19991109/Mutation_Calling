@@ -2,9 +2,6 @@
 
 This is the pipeline for DNA mutation calling. 
 
-If you get any question about the pipeline, you can directly contact Edison Jianning KANG (e-mail address: <jianning.18@intl.zju.edu.cn>).
-
-
 # Outline
 
 <!-- TOC -->
