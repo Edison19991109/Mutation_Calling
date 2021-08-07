@@ -159,4 +159,4 @@ To run the last four steps, you can run the script [`All.sh`](https://github.com
 *(Detail version information of all the programs that are mentioned here are provided in an early section.)*
 
 # Reference
-It will be added later.
+https://github.com/tianshilu/QBRC-Somatic-Pipeline
